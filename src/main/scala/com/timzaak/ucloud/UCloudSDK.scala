@@ -19,13 +19,13 @@ trait UCloudSDK extends JsonHelperWithDoubleMode {
 
   val baseUrl = "https://api.ucloud.cn/"
 
-  def publicKey: S
+  def publicKey: String
 
-  def privateKey: S
+  def privateKey: String
 
-  def projectId: S
+  def projectId: String
 
-  protected def signature(param: Map[S, S]) = {
+  protected def signature(param: Map[String, String]) = {
     val str = param.toSeq.sortBy(_._1).foldLeft("")((r, z) => r + z._1 + z._2) + privateKey
     SHA(str, SHA.SHA_1)
   }
@@ -42,8 +42,7 @@ trait UCloudSDK extends JsonHelperWithDoubleMode {
   }
 
   class UFile(bucket: String) {
-
-    private def authorizationString(req:UFileRequest) = {
+    private def authorization(req:UFileRequest) = {
       import req._
       val canonicalizedResource = s"""\$bucket\$key"""
       val strTosig = s"$http_method\n$content_md5\n$content_type\n$date\n$canonicalizedResource"

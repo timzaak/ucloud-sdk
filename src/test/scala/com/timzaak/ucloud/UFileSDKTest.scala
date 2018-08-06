@@ -12,12 +12,10 @@ class UFileSDKTest extends FreeSpec with Matchers {
       override val privateKey: String = config.getString("privateKey")
       override val publicKey: String = config.getString("publicKey")
     }
-    val req = UFileRequest("test.jpg")
     val data = Files.readAllBytes(Paths.get(config.getString("path")))
+    val req = UFileRequest("test.jpg")
+
     val res = uFile.putFile(req, data)
     res.is2xx shouldBe true
-
-
-
   }
 }

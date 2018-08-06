@@ -21,4 +21,4 @@ target/
 .pyc
 
 
-src/test/scala/*
+src/test/resources/*

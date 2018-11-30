@@ -18,9 +18,9 @@ trait UFileSDK {
   val privateKey: String
   val publicKey: String
   val hostPrefix: String = "cn-sh2.ufileos.com"
-  val connTimeoutMS = 2000
-  val readTimeoutMs = 20000
-  val defaultExpireTime = 60 * 30 // integer类型, 下载链接有效时间，单位为秒
+  val connTimeoutMS:Int = 2000
+  val readTimeoutMs:Int = 20000
+  val defaultExpireTime:Int = 60 * 30 // integer类型, 下载链接有效时间，单位为秒
   lazy val requestUrl = s"https://$bucket.$hostPrefix"
 
   private def encodeUrl(value: String) = HttpConstants.urlEncode(value, HttpConstants.utf8)

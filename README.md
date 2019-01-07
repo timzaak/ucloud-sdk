@@ -1,6 +1,10 @@
 ## UCloud SDK
 
-这个主要是自己用的，包含 UCloud API SDK 和 UFile 上传文件（PUT方法）。
+PS: 注意，此项目的价值只会是自己用了，具体实现可以参考官方 [ufile-java-sdk](https://github.com/ucloud/ufile-sdk-java) 。
+目前该项目的一些 BUG 修复也是参考它的实现。此项目存在的意义，主要是在自己项目中不想引入各种 http client。
+后面关于一些加密算法之类的，会替换成 UCloud 的实现，感觉它的实现是 ok 的。
+
+这个主要是自己用的，包含 UCloud API SDK 和 UFile 上传文件（PUT方法，私有文件 url 生成）。
 
 ### UCloud API
 UCLoud API 很简单，基本上对照下 UAPI的 examples，就懂了。

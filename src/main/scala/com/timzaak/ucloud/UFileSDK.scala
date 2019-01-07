@@ -27,7 +27,7 @@ trait UFileSDK {
   def authorization(req: UFileRequest) = {
     import req._
     val canonicalizedResource = s"""/$bucket/$key"""
-    val strTosig = s"${http_method.toUpperCase}\n$content_md5\n$content_type\ndate\n$canonicalizedResource"
+    val strTosig = s"${http_method.toUpperCase}\n$content_md5\n$content_type\n$date\n$canonicalizedResource"
     val signature = new HmacSHA1().sign(privateKey, strTosig)
     s"UCloud $publicKey:$signature"
   }
@@ -54,16 +54,14 @@ trait UFileSDK {
     s"$url/${encodeUrl(key)}"
   }
 
-  //私有文件还需要 User-Agent 签名，真是秀逗了。浏览器 User-Agent 贼长！
   def privateDownloadFileUrl(
       key: String,
       expire: Int = defaultExpireTime,
-      userAgent: String = "scalaj4",
       url: String = requestUrl
   ): String = {
     val expireStr = (System.currentTimeMillis() / 1000 + expire).toString
     def signature = {
-      val strTosig = s"GET\n\n$expireStr\n/$bucket/$key"
+      val strTosig = s"GET\n\n\n$expireStr\n/$bucket/$key"
       new HmacSHA1().sign(privateKey, strTosig)
     }
     s"$url/${encodeUrl(key)}?UCloudPublicKey=${encodeUrl(publicKey)}&Expires=${encodeUrl(expireStr)}&Signature=${encodeUrl(signature)}"
@@ -72,11 +70,9 @@ trait UFileSDK {
   def privateDownloadFile(
       key: String,
       expire: Int = defaultExpireTime,
-      userAgent: String = "scalaj4",
       url: String = requestUrl
   ) = {
-    Http(privateDownloadFileUrl(key, expire, userAgent, url))
-      .header("User-Agent", userAgent)
+    Http(privateDownloadFileUrl(key, expire, url))
       .asBytes
   }
 }

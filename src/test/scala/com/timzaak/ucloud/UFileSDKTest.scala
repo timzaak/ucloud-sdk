@@ -31,6 +31,11 @@ class UFileSDKTest extends FreeSpec with Matchers {
     val res = uFile.privateDownloadFileUrl("test.jpg")
     println(res)
   }
+
+  "getInfo" in {
+    println(uFile.getInfo("test.jpg"))
+  }
+
   "UFile upfile" in {
     val bean = UfileClient
       .`object`(auther, buck)
@@ -51,5 +56,8 @@ class UFileSDKTest extends FreeSpec with Matchers {
         .getDownloadUrlFromPrivateBucket("test.jpg", config.getString("bucket"), 60 * 30)
         .createUrl()
     )
+  }
+  "UFile exits" in {
+    println(UfileClient.`object`(auther,buck).objectProfile("test.jpg",config.getString("bucket")).execute().toString)
   }
 }

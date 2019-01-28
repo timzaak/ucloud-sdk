@@ -73,7 +73,7 @@ trait UFileSDK {
       val strTosig = s"GET\n\n\n$expireStr\n/$bucket/$key"
       new HmacSHA1().sign(privateKey, strTosig)
     }
-    s"$url/${encodeUrl(key)}?UCloudPublicKey=${encodeUrl(publicKey)}&Expires=${encodeUrl(expireStr)}&Signature=${encodeUrl(signature)}"
+    s"$url/$key?UCloudPublicKey=$publicKey&Expires=$expireStr&Signature=$signature"
   }
 
   def privateDownloadFile(
@@ -85,7 +85,7 @@ trait UFileSDK {
   }
 
   def getInfo(key: String) = {
-    val result = Http(s"$requestUrl/${encodeUrl(key)}")
+    val result = Http(s"$requestUrl/$key")
       .header("Authorization", authorization(UFileRequest(key, http_method = "HEAD")))
       .timeout(connTimeoutMS, readTimeoutMs)
       .method("HEAD")

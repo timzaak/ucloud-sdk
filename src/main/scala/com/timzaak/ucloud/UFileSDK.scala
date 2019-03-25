@@ -1,6 +1,6 @@
 package com.timzaak.ucloud
 
-import com.tizaak.ucloud.codec.Encryptor
+import com.tizaak.ucloud.codec.HmacSHA1
 import scalaj.http.{ Http, HttpConstants }
 
 case class UFileRequest(
@@ -37,7 +37,7 @@ trait UFileSDK {
     import req._
     val canonicalizedResource = s"""/$bucket/$key"""
     val strTosig = s"${http_method.toUpperCase}\n$content_md5\n$content_type\n$date\n$canonicalizedResource"
-    val signature = Encryptor.Hmac_SHA1(privateKey, strTosig)
+    val signature = new HmacSHA1().sign(privateKey, strTosig)
     s"UCloud $publicKey:$signature"
   }
 
@@ -71,7 +71,7 @@ trait UFileSDK {
     val expireStr = (System.currentTimeMillis() / 1000 + expire).toString
     def signature = {
       val strTosig = s"GET\n\n\n$expireStr\n/$bucket/$key"
-      Encryptor.Hmac_SHA1(privateKey, strTosig)
+      new HmacSHA1().sign(privateKey, strTosig)
     }
     s"$url/$key?UCloudPublicKey=$publicKey&Expires=$expireStr&Signature=$signature"
   }

@@ -23,4 +23,4 @@ UFile privateKey和publicKey 可以是UAPI的秘钥，也可以是UFile里的令
 如果传递 `Content-Type`，就必须传递 `Content-MD5`，否则报签名错误。
 
 ### PS
-整个代码也就是签名的地方参考下，自己实现就可以了。 UFile 的 HmacSHA1 加密类直接复制 官方JAVASDK.
+整个代码也就是签名的地方参考下，自己实现就可以了。 UFile 的 HmacSHA1 加密类直接复制 官方JAVASDK，里面有使用 `synchronized` 锁， 要注意一下！！！目前没时间替换掉。

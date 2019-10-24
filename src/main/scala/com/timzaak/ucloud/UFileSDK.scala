@@ -69,9 +69,9 @@ trait UFileSDK {
       url: String = requestUrl
   ): String = {
     val expireStr = (System.currentTimeMillis() / 1000 + expire).toString
-    def signature = {
-      val strTosig = s"GET\n\n\n$expireStr\n/$bucket/$key"
-      new HmacSHA1().sign(privateKey, strTosig)
+    val signature = {
+      val strToSig = s"GET\n\n\n$expireStr\n/$bucket/$key"
+      new HmacSHA1().sign(privateKey, strToSig)
     }
     s"$url/$key?UCloudPublicKey=$publicKey&Expires=$expireStr&Signature=$signature"
   }

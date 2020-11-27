@@ -2,11 +2,11 @@ name := "ucloud_client"
 
 version := "1.0"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.13.1"
 
 libraryDependencies ++= Seq(
   "cn.ucloud.ufile" % "ufile-client-java" % "2.0.4" % Test,
-  "org.scalatest" %% "scalatest" % "3.0.1" % Test,
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test,
   "com.typesafe" % "config" % "1.3.3" % Test
 )
 

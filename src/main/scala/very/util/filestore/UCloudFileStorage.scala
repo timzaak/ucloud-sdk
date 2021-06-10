@@ -1,0 +1,25 @@
+package very.util.filestore
+
+import com.timzaak.ucloud.{UFileRequest, UFileSDK}
+
+import scala.util.Try
+
+class UCloudFileStorage(sdk: UFileSDK, isPrivate: Boolean = true, urlPre: String) extends FileStorage {
+  override def getBytes(key: String): Try[Array[Byte]] = {
+    Try { sdk.privateDownloadFile(key).body }
+  }
+
+  override def saveBytes(
+      key: String,
+      bytes: Array[Byte]
+  ): Try[Unit] = {
+    Try {
+      sdk.putFile(UFileRequest(key), bytes)
+      ()
+    }
+  }
+  override def isExists(key: String): Boolean = sdk.getInfo(key).nonEmpty
+
+  def getRemoteUrl(key: String): String =
+    if (isPrivate) sdk.privateDownloadFileUrl(key, url = urlPre) else sdk.publicDownloadFileUrl(key, url = urlPre)
+}

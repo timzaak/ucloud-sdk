@@ -13,8 +13,13 @@ class UCloudFileStorage(sdk: UFileSDK, isPrivate: Boolean = true, urlPre: String
       key: String,
       bytes: Array[Byte]
   ): Try[Unit] = {
+    val mime = key.split('.').lastOption.collect {
+      case "pdf" => "application/pdf"
+      case "png" => "image/png"
+      case "jpeg"|"jpg" => "image/jpeg"
+    }
     Try {
-      sdk.putFile(UFileRequest(key), bytes)
+      sdk.putFile(UFileRequest(key, content_type = mime.getOrElse("")), bytes)
       ()
     }
   }

@@ -8,28 +8,29 @@ import scala.util.{Random, Try}
 class MixedFileStorage(prefix: String, localFileStorage: LocalFileStorage, uCloudFileStorage: UCloudFileStorage) {
   private val fmt = DateTimeFormat.forPattern("yyyyMMddHHmmss")
 
-  protected def generateKey(): String = {
+  protected def generateKey(suffix:Option[String]=None): String = {
+    val suffixFix = suffix.map(v => s".$v").getOrElse("")
     if (prefix.isEmpty) {
-      s"${DateTime.now.toString(fmt)}-${Random.nextInt(99999)}"
+      s"${DateTime.now.toString(fmt)}-${Random.nextInt(99999)}${suffixFix}"
     } else {
-      s"$prefix/${DateTime.now.toString(fmt)}-${Random.nextInt(99999)}"
+      s"$prefix/${DateTime.now.toString(fmt)}-${Random.nextInt(99999)}${suffixFix}"
     }
   }
 
   def saveLocalFile(data: Array[Byte]) = {
-    val key = generateKey
+    val key = generateKey()
     localFileStorage.saveBytes(key, data).map { _ =>
       key
     }
   }
   def saveRemoteFile(data: Array[Byte]) = {
-    val key = generateKey
+    val key = generateKey()
     uCloudFileStorage.saveBytes(key, data).map { _ =>
       key
     }
   }
-  def saveFile(data: Array[Byte]) = {
-    val key = generateKey
+  def saveFile(data: Array[Byte], suffix:Option[String] = None) = {
+    val key = generateKey(suffix)
     localFileStorage
       .saveBytes(key, data)
       .flatMap { _ =>

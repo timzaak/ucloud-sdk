@@ -1,6 +1,7 @@
 package com.timzaak.ucloud
 
 import com.tizaak.ucloud.codec.HmacSHA1
+import org.apache.commons.codec.digest.DigestUtils
 import scalaj.http.{ Http, HttpConstants }
 
 case class UFileRequest(
@@ -19,7 +20,7 @@ case class ObjectProfile(
     eTag: String,
     acceptRanges: String,
     lastModified: String,
-    vary: String,
+    vary: String
 )
 
 trait UFileSDK {
@@ -33,10 +34,10 @@ trait UFileSDK {
   lazy val requestUrl = s"https://$bucket.$hostPrefix"
 
   private def encodeUrl(value: String) = HttpConstants.urlEncode(value, HttpConstants.utf8)
-  def authorization(req: UFileRequest) = {
-    import req._
+  def authorization(key: String, httpMethod: String, contentMD5: String = "", contentType: String= "", date: String = "") = {
+
     val canonicalizedResource = s"""/$bucket/$key"""
-    val strTosig = s"${http_method.toUpperCase}\n$content_md5\n$content_type\n$date\n$canonicalizedResource"
+    val strTosig = s"${httpMethod.toUpperCase}\n$contentMD5\n$contentType\n$date\n$canonicalizedResource"
     val signature = new HmacSHA1().sign(privateKey, strTosig)
     s"UCloud $publicKey:$signature"
   }
@@ -44,14 +45,16 @@ trait UFileSDK {
   def putFile(param: UFileRequest, data: Array[Byte]) = {
     import param._
     var req = Http(s"$requestUrl/${encodeUrl(key)}")
-      .header("Authorization", authorization(param))
       .timeout(connTimeoutMS, readTimeoutMs)
-    if (content_md5 != "") {
-      req = req.header("Content-Type", content_type)
+    val md5 = if (content_type != "" && content_md5 == "") {
+      DigestUtils.md5Hex(data)
+    } else {
+      content_md5
     }
-    if (content_type != "") {
-      req = req.header("Content-MD5", content_md5)
-    }
+    req = req.header("Content-MD5", md5)
+    req = req.header("Content-Type", content_type)
+
+    req = req.header("Authorization", authorization(key, http_method, md5, content_type, date))
     if (date != "") {
       req = req.header("Date", date)
     }
@@ -86,7 +89,7 @@ trait UFileSDK {
 
   def getInfo(key: String) = {
     val result = Http(s"$requestUrl/$key")
-      .header("Authorization", authorization(UFileRequest(key, http_method = "HEAD")))
+      .header("Authorization", authorization(key, "HEAD", "","",""))
       .timeout(connTimeoutMS, readTimeoutMs)
       .method("HEAD")
       .asBytes
@@ -98,7 +101,7 @@ trait UFileSDK {
           eTag = result.header("ETAG").getOrElse(""),
           acceptRanges = result.header("Accept-Ranges").getOrElse(""),
           lastModified = result.header("Last-Modified").getOrElse(""),
-          vary = result.header("Vary").getOrElse(""),
+          vary = result.header("Vary").getOrElse("")
         )
       )
     } else {

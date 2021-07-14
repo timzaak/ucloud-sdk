@@ -17,12 +17,12 @@ class MixedFileStorage(prefix: String, localFileStorage: LocalFileStorage, uClou
     }
   }
 
-  def saveLocalFile(data: Array[Byte]) = {
-    val key = generateKey()
+  def saveLocalFile(data: Array[Byte], key: String = generateKey()) = {
     localFileStorage.saveBytes(key, data).map { _ =>
       key
     }
   }
+
   def saveRemoteFile(data: Array[Byte]) = {
     val key = generateKey()
     uCloudFileStorage.saveBytes(key, data).map { _ =>
@@ -47,5 +47,10 @@ class MixedFileStorage(prefix: String, localFileStorage: LocalFileStorage, uClou
   def existLocal(key: String) = localFileStorage.isExists(key)
 
   def getLocalPath(key: String) = localFileStorage.getPath(key)
+
+  //TODO: 同步下载问题，需要锁
+  def getFile(key:String) =if(existLocal(key)) { localFileStorage.getPath(key) } else {
+    getRemoteFile(key).map(v => saveLocalFile(v, key))
+  }
 
 }

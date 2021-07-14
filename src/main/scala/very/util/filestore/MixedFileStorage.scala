@@ -49,8 +49,11 @@ class MixedFileStorage(prefix: String, localFileStorage: LocalFileStorage, uClou
   def getLocalPath(key: String) = localFileStorage.getPath(key)
 
   //TODO: 同步下载问题，需要锁
-  def getFile(key:String) =if(existLocal(key)) { localFileStorage.getPath(key) } else {
-    getRemoteFile(key).map(v => saveLocalFile(v, key))
+  def getFile(key:String) =if(existLocal(key)) { localFileStorage.getBytes(key) } else {
+    getRemoteFile(key).map{v =>
+      saveLocalFile(v, key)
+      v
+    }
   }
 
 }

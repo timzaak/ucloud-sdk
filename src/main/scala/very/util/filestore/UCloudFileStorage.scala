@@ -1,6 +1,7 @@
 package very.util.filestore
 
-import com.timzaak.ucloud.{UFileRequest, UFileSDK}
+import com.timzaak.ucloud.UFileRequest
+import com.timzaak.ucloud.UFileSDK
 
 import scala.util.Try
 
@@ -14,9 +15,9 @@ class UCloudFileStorage(sdk: UFileSDK, isPrivate: Boolean = true, urlPre: String
       bytes: Array[Byte]
   ): Try[Unit] = {
     val mime = key.split('.').lastOption.collect {
-      case "pdf" => "application/pdf"
-      case "png" => "image/png"
-      case "jpeg"|"jpg" => "image/jpeg"
+      case "pdf"          => "application/pdf"
+      case "png"          => "image/png"
+      case "jpeg" | "jpg" => "image/jpeg"
     }
     Try {
       sdk.putFile(UFileRequest(key, content_type = mime.getOrElse("")), bytes)
@@ -27,4 +28,9 @@ class UCloudFileStorage(sdk: UFileSDK, isPrivate: Boolean = true, urlPre: String
 
   def getRemoteUrl(key: String): String =
     if (isPrivate) sdk.privateDownloadFileUrl(key, url = urlPre) else sdk.publicDownloadFileUrl(key, url = urlPre)
+
+  def getUploadFileSignature(key: String, contentMD5: String, contentType: String) = {
+    sdk.authorization(key, contentMD5 = contentMD5, contentType = contentType)
+  }
+
 }

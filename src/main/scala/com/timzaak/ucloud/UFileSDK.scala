@@ -25,8 +25,8 @@ case class ObjectProfile(
 
 trait UFileSDK {
   val bucket: String
-  protected val privateKey: String
   protected val publicKey: String
+  protected val privateKey: String
   protected val hostPrefix: String = "cn-sh2.ufileos.com"
   val connTimeoutMS: Int = 2000
   val readTimeoutMs: Int = 20000
@@ -34,7 +34,7 @@ trait UFileSDK {
   lazy val requestUrl = s"https://$bucket.$hostPrefix"
 
   private def encodeUrl(value: String) = HttpConstants.urlEncode(value, HttpConstants.utf8)
-  def authorization(key: String, httpMethod: String, contentMD5: String = "", contentType: String= "", date: String = "") = {
+  def authorization(key: String, httpMethod: String = "POST", contentMD5: String = "", contentType: String= "", date: String = "") = {
 
     val canonicalizedResource = s"""/$bucket/$key"""
     val strTosig = s"${httpMethod.toUpperCase}\n$contentMD5\n$contentType\n$date\n$canonicalizedResource"

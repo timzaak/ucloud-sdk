@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.13.1"
 
 libraryDependencies ++= Seq(
-  "cn.ucloud.ufile" % "ufile-client-java" % "2.0.4" % Test,
+  "cn.ucloud.ufile" % "ufile-client-java" % "2.6.6" % Test,
   "org.scalatest" %% "scalatest" % "3.0.8" % Test,
   "com.typesafe" % "config" % "1.3.3" % Test,
   "com.github.pathikrit" %% "better-files" % "3.8.0",

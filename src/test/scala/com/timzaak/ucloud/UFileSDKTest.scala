@@ -37,6 +37,7 @@ class UFileSDKTest extends FreeSpec with Matchers {
   }
 
   "UFile upfile" in {
+    /*
     val bean = UfileClient
       .`object`(auther, buck)
       .putObject(Files.newInputStream(Paths.get(config.getString("path"))), "image/jpeg")
@@ -46,7 +47,7 @@ class UFileSDKTest extends FreeSpec with Matchers {
         config.getString("bucket")
       )
       .execute()
-    bean.toString
+    bean.toString*/
   }
 
   "UFile downloadPrivate" in {

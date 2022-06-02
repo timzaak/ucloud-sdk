@@ -3,7 +3,7 @@ package com.tizaak.ucloud.codec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.DatatypeConverter;
+//import javax.xml.bind.DatatypeConverter;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -66,6 +66,7 @@ public class HmacSHA1 {
     }
 
     private String toBase64String(byte[] binaryData){
-        return DatatypeConverter.printBase64Binary(binaryData);
+        return java.util.Base64.getEncoder().encodeToString(binaryData);
+        //return DatatypeConverter.printBase64Binary(binaryData);
     }
 }

@@ -29,8 +29,8 @@ class UCloudFileStorage(sdk: UFileSDK, isPrivate: Boolean = true, urlPre: String
   def getRemoteUrl(key: String): String =
     if (isPrivate) sdk.privateDownloadFileUrl(key, url = urlPre) else sdk.publicDownloadFileUrl(key, url = urlPre)
 
-  def getUploadFileSignature(key: String, contentMD5: String, contentType: String) = {
-    sdk.authorization(key, contentMD5 = contentMD5, contentType = contentType)
+  def getUploadFileSignature(key: String, httpMethod:String,contentMD5: String, contentType: String) = {
+    sdk.authorization(key,  httpMethod = httpMethod, contentMD5 = contentMD5, contentType = contentType)
   }
 
 }
